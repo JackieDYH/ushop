@@ -7,8 +7,29 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: ()=>import ('@/components/pages/index')
+      component: () => import('@/components/pages/index'),
+      children: [
+        {
+          path: 'home',
+          name: 'home',
+          component: () => import('@/components/pages/home'),
+        },
+        {
+          path: 'cart',
+          name: 'cart',
+          component: () => import('@/components/pages/cart'),
+        },
+        {
+          path: 'me',
+          name: 'me',
+          component: () => import('@/components/pages/me'),
+        },
+        // {
+        //   path: '',
+        //   redirect:'/'
+        // }        
+      ]
     }
-  ]
+  ],
+  // mode:"history",//路由模式 默认hash
 })

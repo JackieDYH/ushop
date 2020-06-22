@@ -1,9 +1,17 @@
 <template>
-    <h2>首页</h2>
+    <div>
+        <router-view></router-view>
+        <v-nav></v-nav>
+    </div>    
 </template>
 
 <script>
-export default {};
+import vNav from '../views/tabnav'
+export default {
+    components:{
+        vNav,
+    }
+};
 </script>
 
 <style>
