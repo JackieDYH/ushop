@@ -1,17 +1,17 @@
 <template>
-  <mt-tabbar v-model="selectActive" fixed>
+  <mt-tabbar v-model="selected" fixed>
     <mt-tab-item id="/home" @click.native="switchTab('/home')">
-      <img slot="icon" src="../../assets/img/home_on.png" v-if="this.selectActive == '/home'" />
+      <img slot="icon" src="../../assets/img/home_on.png" v-if="this.selected == '/home'" />
       <img slot="icon" src="../../assets/img/home.png" v-else />
       首页
     </mt-tab-item>
     <mt-tab-item id="/cart" @click.native="switchTab('/cart')">
-      <img slot="icon" src="../../assets/img/cart_on.png" v-if="this.selectActive == '/cart'" />
+      <img slot="icon" src="../../assets/img/cart_on.png" v-if="this.selected == '/cart'" />
       <img slot="icon" src="../../assets/img/cart.png" v-else />
       购物车
     </mt-tab-item>
     <mt-tab-item id="/me" @click.native="switchTab('/me')">
-      <img slot="icon" src="../../assets/img/me_on.png" v-if="this.selectActive == '/me'" />
+      <img slot="icon" src="../../assets/img/me_on.png" v-if="this.selected == '/me'" />
       <img slot="icon" src="../../assets/img/me.png" v-else />
       我的
     </mt-tab-item>
@@ -22,7 +22,7 @@
 export default {
   data() {
     return {
-      selectActive: "/home"
+      selected: "/home"
     };
   },
   methods: {
@@ -33,15 +33,18 @@ export default {
     }
   },
   mounted() {
-    this.selectActive = this.$route.path;
+    this.selected = this.$route.path;
   },
   watch: {
     $route(newVel) {
-      this.selectActive = newVel.path;
+      this.selected = newVel.path;
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
+.mint-tabbar.is-fixed{
+  height: 55px;
+}
 </style>

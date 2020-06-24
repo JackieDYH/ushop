@@ -1,48 +1,91 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+@charset "utf-8";
+/* JCHao */
+body,h1,h2,h3,h4,h5,h6,p,th,td,ol,ul,dl,dd,form,fieldset,legend,input,button,textarea,select {
 	margin: 0;
 	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
 }
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
+
 body {
-	line-height: 1;
+	font-family: Arial, "微软雅黑", "宋体", Helvetica, sans-serif;
+	font-size: 12px;
+	line-height:1;
+    -webkit-text-size-adjust: 100%!important; /*禁止IOS调整字体大小*/
 }
-ol, ul {
-	list-style: none;
+
+h1,h2,h3,h4,h5,h6,b,strong,th {
+	font-size: 100%;
+	font-weight: normal;/*去掉标题自带加粗*/
 }
-blockquote, q {
-	quotes: none;
+
+i,em {
+	font-style: normal;/*斜体扶正*/
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+
+ul,ol {
+	list-style: none;/*去掉默认列表符*/
 }
+
+/*多行文本输入框*/
+textarea {
+	outline:none;
+	resize: none;/* 禁止用户重置元素大小 */
+	overflow: auto;/*在浏览器默认状态下没有滚动条*/
+	font-family: inherit;
+}
+
+img {
+	border: none;/*去掉ie浏览器图片外面的边框*/
+	vertical-align: middle;/*图片对齐方式*/
+}
+
+a {
+	outline:none;/*去掉描边*/
+	text-decoration: none;/*去掉自带下划线*/
+	color: #333;
+}
+
+/* a:hover {
+	color: #ff4800;
+	text-decoration: underline;
+} */
+
 table {
-	border-collapse: collapse;
+	border-collapse: collapse;/*去掉表格自带间隙*/
 	border-spacing: 0;
+}
+
+th,td {
+	text-align: left;
+	vertical-align: middle;
+}
+
+input,button {
+	border: none;/* 去除选中轮廓效果 */
+	outline: none;
+	font-family: inherit;
+	background-color:transparent;/*背景色透明*/
+}
+
+a,button,input,select,textarea {
+    -webkit-tap-highlight-color:rgba(0,0,0,0);  /*去掉a、input和button点击时的蓝色外边框和灰色半透明背景*/
+}
+a,button,input,optgroup,select,textarea {
+    -webkit-appearance:none;  /*去掉webkit默认的表单样式*/
+}
+
+/* 清除浮动影响 */
+.clearfix::after{
+	content: "";
+	display: block;
+	clear: both;
+}
+.clearfix{
+	*zoom: 1;
+}
+
+.fl{
+    float:left;
+}
+.fr{
+    float:right;
 }

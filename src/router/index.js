@@ -24,10 +24,15 @@ export default new Router({
           name: 'me',
           component: () => import('@/components/pages/me'),
         },
-        // {
-        //   path: '',
-        //   redirect:'/'
-        // }        
+        {
+          path: 'cate',
+          name: 'cate',
+          component: () => import('@/components/pages/cate'),
+        },
+        {
+          path: '',
+          redirect:'home'
+        }        
       ]
     }
   ],

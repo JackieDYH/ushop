@@ -9,6 +9,14 @@ import Mint from 'mint-ui';
 Vue.use(Mint);
 import "mint-ui/lib/style.css"
 
+// 引入axios
+import axios from 'axios'
+Vue.prototype.$axios = axios
+
+// 引入api接口文件
+import apis from './common/js/apis'
+Vue.prototype.$apis = apis
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
