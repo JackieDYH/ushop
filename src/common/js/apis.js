@@ -8,7 +8,8 @@ const   login = '/api/login',
         getseckill = '/api/getseckill',
         getindexgoods = '/api/getindexgoods',
         getcategoods = '/api/getcategoods',
+        getsearch = '/api/getsearch',
         getgoodsinfo = '/api/getgoodsinfo';
 export default {
-    login,register,getcate,getcatelist,getbanner,getseckill,getindexgoods,getindexgoods,getcategoods,getgoodsinfo
+    login,register,getcate,getcatelist,getbanner,getseckill,getindexgoods,getindexgoods,getcategoods,getsearch,getgoodsinfo
 }

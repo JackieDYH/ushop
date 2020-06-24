@@ -17,6 +17,9 @@ Vue.prototype.$axios = axios
 import apis from './common/js/apis'
 Vue.prototype.$apis = apis
 
+// 引入阿里iconfont图标库
+import './assets/iconfont/iconfont.css'
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -30,6 +30,21 @@ export default new Router({
           component: () => import('@/components/pages/cate'),
         },
         {
+          path: 'cate/:cateid',
+          name: 'catelist',
+          component: () => import('@/components/pages/goodslist'),
+        },
+        {
+          path: 'search/:searchtext',
+          name: 'searchlist',
+          component: () => import('@/components/pages/goodslist'),
+        },
+        {
+          path: 'detail/:id',
+          name: 'detaillist',
+          component: () => import('@/components/pages/detail'),
+        },
+        {
           path: '',
           redirect:'home'
         }        

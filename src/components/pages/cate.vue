@@ -17,12 +17,14 @@
             </ul>
         </div>
         <div class="right">
+            <!-- 二级分类 -->
             <div class="list"
                 v-for="(item,idx) of catesarr" :key="idx"
                 v-show="btnactive == idx"
             >
                 <div class="item"
                      v-for="goods of item.children" :key="goods.id"
+                     @click="tolist(goods.pid)"
                 >
                     <img :src="goods.img">
                     <h4>{{ goods.catename }}</h4>
@@ -42,7 +44,10 @@ export default {
         }
     },
     methods:{
-
+        // 跳转列表list页面
+        tolist(id){
+            this.$router.push('/cate/'+id);
+        }
     },
     mounted(){
         this.$axios.get(this.$apis.getcatelist).then(res=>{

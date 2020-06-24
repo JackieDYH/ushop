@@ -4,7 +4,11 @@
       <router-link to="/home">
         <img src="/static/img/logo.jpg" />
       </router-link>
-      <input type="search" slot placeholder="搜索商品" />
+      <!-- <input type="search" slot placeholder="搜索商品" /> -->
+      <div class="search">
+        <input type="search" v-model.trim="searchText" placeholder="搜索商品" />
+        <i class="iconfont icon-fangdajing" @click="search"></i>
+      </div>
       <div class="menu">
         <span></span>
         <span></span>
@@ -139,9 +143,16 @@ export default {
             catearr:[],//分类信息
             bannerarr:[],//轮播图
             goodsarr:[],//商品
+            searchText:'',//搜索
         }
     },
     methods:{
+        // 搜索
+        search(){
+            if(!this.searchText)return;
+            this.$router.push('/search/'+this.searchText);
+            this.searchText = '';
+        },
         //分类信息
         getcate(){
             return this.$axios.get(this.$apis.getcate);
@@ -193,14 +204,16 @@ export default {
   width: 1.5rem;
   height: 0.29rem;
 }
-.head input {
+.head .search {
   width: 3.03rem;
   height: 0.38rem;
   background: #eee;
   border-radius: 0.05rem;
-  text-align: center;
   color: #b8b8b8;
   font: 0.18rem/0.38rem "微软雅黑";
+}
+.head .search input{
+  text-align: center;
 }
 .head .menu span {
   display: inline-block;
