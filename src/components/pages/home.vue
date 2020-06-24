@@ -209,6 +209,7 @@ export default {
   border-radius: 50%;
   background-color: #333;
 }
+
 /* navbtn 导航部分 */
 .main .navbtn {
   position: relative;

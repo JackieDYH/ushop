@@ -96,18 +96,21 @@ export default {
     display: flex;
     flex-wrap: wrap;
     /* justify-content: space-around; */
-    padding: 0.2rem 0 0 0;
+    padding: 0.2rem 0 0 .15rem;
+    box-sizing: border-box;
 }
 .main .right .list .item{
     text-align: center;
-    width: 31%;
+    width: 30%;
     border: 1px solid #d9d9d9;
-    border-radius: .18rem;
-    margin: .04rem .02rem;
+    border-radius: .12rem;
+    overflow: hidden;
+    margin: .04rem .03rem;
+    box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.4);
 }
 .main .right .list .item img{
-    width: 1.54rem;
-    height: 1.52rem;
+    width: 1.4rem;
+    height: 1.45rem;
 }
 .main .right .list .item h4{
     font: 0.22rem/0.4rem "微软雅黑";

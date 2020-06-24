@@ -1,5 +1,5 @@
 <template>
-  <mt-tabbar v-model="selected" fixed>
+  <mt-tabbar fixed v-model="selected">
     <mt-tab-item id="/home" @click.native="switchTab('/home')">
       <img slot="icon" src="../../assets/img/home_on.png" v-if="this.selected == '/home'" />
       <img slot="icon" src="../../assets/img/home.png" v-else />
@@ -45,6 +45,8 @@ export default {
 
 <style scoped>
 .mint-tabbar.is-fixed{
-  height: 55px;
+  width: 100%;
+  /* height: 55px; */
+  box-sizing: border-box;
 }
 </style>

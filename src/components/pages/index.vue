@@ -15,11 +15,9 @@ export default {
 </script>
 
 <style scoped>
+
 #views {
-  width: 100vw;
-  height: auto;
-  flex: 1;
-  /* height: calc(100% - .8rem); */
-  margin: .8rem 0 1rem;
+ padding: .8rem 0 55px;
+ box-sizing: border-box;
 }
 </style>
