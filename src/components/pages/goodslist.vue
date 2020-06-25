@@ -84,7 +84,11 @@ export default {
       }).then(res => {
         setTimeout(() => {
           Indicator.close();
-          this.goodslist = res.data.list;
+          if (res.data.list == null) {
+            this.goodslist = [];
+          } else {
+            this.goodslist = res.data.list;
+          }
         }, 600);
       });
     }

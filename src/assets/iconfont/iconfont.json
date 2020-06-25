@@ -6,6 +6,20 @@
   "description": "项目图标",
   "glyphs": [
     {
+      "icon_id": "12686755",
+      "name": "加",
+      "font_class": "icon-",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "7631",
+      "name": "减",
+      "font_class": "jian",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
       "icon_id": "8157647",
       "name": "放大镜",
       "font_class": "fangdajing",
