@@ -27,9 +27,9 @@
         <div class="ls">
           <em>购买数量</em>
           <div class="num">
-            <i class="iconfont icon-jian"></i>
-            <span>1</span>
-            <i class="iconfont icon-icon-"></i>
+            <i class="iconfont icon-jian" @click="numDown"></i>
+            <span>{{ this.num }}</span>
+            <i class="iconfont icon-icon-" @click="numUp"></i>
           </div>
         </div>
         <div class="ld">
@@ -38,7 +38,12 @@
         </div>
         <div class="lf" v-show="toggle == 1">
           <span>{{ goodtxt.specsname }}</span>
-          <b v-for="(item,idx) of attarr" :key="idx" :class="{active:attid == idx}" @click="attid=idx">{{ item }}</b>
+          <b
+            v-for="(item,idx) of attarr"
+            :key="idx"
+            :class="{active:attid == idx}"
+            @click="attrbtn(idx)"
+          >{{ item }}</b>
         </div>
       </div>
       <!-- 商品详情 -->
@@ -47,11 +52,11 @@
           <h4>商品详情</h4>
         </div>
         <div class="text" v-html="goodtxt.description">
-          <img src="/static/img/picDetail_3.jpg">
-          <img src="/static/img/picDetail_4.jpg">
-          <img src="/static/img/picDetail_5.jpg">
-          <img src="/static/img/picDetail_6.jpg">
-          <img src="/static/img/picDetail_7.jpg">
+          <img src="/static/img/picDetail_3.jpg" />
+          <img src="/static/img/picDetail_4.jpg" />
+          <img src="/static/img/picDetail_5.jpg" />
+          <img src="/static/img/picDetail_6.jpg" />
+          <img src="/static/img/picDetail_7.jpg" />
         </div>
       </div>
     </div>
@@ -62,7 +67,7 @@
         <span>购物车</span>
       </div>
       <div class="btns">
-        <span>加入购物车</span>
+        <span @click="cartadd">加入购物车</span>
         <span>立即购买</span>
       </div>
     </div>
@@ -70,32 +75,103 @@
 </template>
 
 <script>
-import { Indicator } from "mint-ui";
+import { mapGetters } from 'vuex'
+import { Indicator, Toast } from "mint-ui";
 export default {
-  data(){
-    return{
-      toggle:0,//显示隐藏
-      goodtxt:[],
-      attarr:[],
-      attid:0,
+  data() {
+    return {
+      toggle: 0, //显示隐藏
+      goodtxt: [],
+      attarr: [],
+      num: 1, //商品数量
+      attid: 0,
+      attribute:'',//选中的商品属性
+    };
+  },
+  computed:{
+    ...mapGetters(['userinfo']),
+  },
+  methods: {
+    // 加入购物车
+    cartadd(){
+      this.attrbtn(this.attid);
+
+      let data = {};
+      data.uid = this.userinfo.uid;
+      data.goodsid = this.goodtxt.id;
+      data.num = this.num;
+      data.attribute = this.goodtxt.specsname +','+ this.attribute;
+      this.$http.post(this.$apis.cartadd,data).then(res=>{
+        console.log(res,11);
+        if (res.data.code == 200) {
+          Indicator.open("添加成功...");
+          setTimeout(() => {
+            Indicator.close();
+            this.$router.push("/cart");
+          }, 600);
+        } else {
+          Indicator.open(res.data.msg);
+          setTimeout(() => {
+            Indicator.close();
+          }, 600);
+        }
+      })
+    },
+    // 商品属性选中
+    attrbtn(id){
+      this.attid = id;
+      this.attribute = this.attarr[id];
+      console.log(this.attribute)
+    },
+    numDown() {
+      if (this.num <= 1) {
+        // this.num = 1;
+        Toast({
+          message: "数量不能小于1",
+          position: "bottom"
+        });
+        return false;
+        setTimeout(() => {
+          instance.close();
+        }, 600);
+      } else {
+        this.num--;
+        // this.cartadd();//调用接口存储商品
+      }
+    },
+    numUp() {
+      if (this.num >= 99) {
+        // this.num = 99;
+        Toast({
+          message: "数量不能大于99",
+          position: "bottom"
+        });
+        return false;
+        setTimeout(() => {
+          instance.close();
+        }, 600);
+      } else {
+        this.num++;
+        // this.cartadd();//调用接口存储商品
+      }
     }
   },
   mounted() {
     Indicator.open("加载中...");
     console.log("id:", this.$route.params.id);
     this.$axios({
-      url:this.$apis.getgoodsinfo,
-      params: { id: this.$route.params.id}
-    }).then(res=>{
-      console.log(res)
-        if(res.data.code == 200){
-          setTimeout(() => {
+      url: this.$apis.getgoodsinfo,
+      params: { id: this.$route.params.id }
+    }).then(res => {
+      console.log(res);
+      if (res.data.code == 200) {
+        setTimeout(() => {
           Indicator.close();
-            this.goodtxt = res.data.list[0];
-            this.attarr = this.goodtxt.specsattr.split(',');
+          this.goodtxt = res.data.list[0];
+          this.attarr = this.goodtxt.specsattr.split(",");
         }, 600);
-        }
-    })
+      }
+    });
   }
 };
 </script>
@@ -187,48 +263,50 @@ export default {
   color: #454545;
   word-spacing: 0.05rem;
 }
-.main .specs .ld i{
-  font-size: .3rem;
+.main .specs .ld i {
+  font-size: 0.3rem;
 }
-.main .specs .lf{
-    display: flex;
-    align-items: center;
-    padding: 0 0.23rem 0.38rem;
+.main .specs .lf {
+  display: flex;
+  align-items: center;
+  padding: 0 0.23rem 0.38rem;
 }
-.main .specs .lf span{
-    font: 0.24rem/100% "微软雅黑";
-    color: #b4b4b4;
-    padding-right: .2rem;
+.main .specs .lf span {
+  font: 0.24rem/100% "微软雅黑";
+  color: #b4b4b4;
+  padding-right: 0.2rem;
 }
-.main .specs .lf b{
+.main .specs .lf b {
   width: 1rem;
   height: 0.4rem;
-    display: block;
-    font: 0.28rem/0.4rem "微软雅黑";
-    color: #fff;
-    background: #e1e1e3;
-    text-align: center;
-    border-radius: 0.04rem;
-    margin: 0 .04rem;
+  display: block;
+  font: 0.28rem/0.4rem "微软雅黑";
+  color: #fff;
+  background: #e1e1e3;
+  text-align: center;
+  border-radius: 0.04rem;
+  margin: 0 0.04rem;
 }
-.main .specs .lf .active,.main .specs .lf b:hover{
+.main .specs .lf .active,
+.main .specs .lf b:hover {
   background: #e43a3d;
 }
 /* 商品详情 */
-.main .details{}
-.main .details .top{
+.main .details {
+}
+.main .details .top {
   border-top: 0.2rem solid #f1f1f1;
   padding: 0 0.23rem;
 }
-.main .details .top h4{
-    font: 0.3rem/1rem "微软雅黑";
-    color: #454545;
+.main .details .top h4 {
+  font: 0.3rem/1rem "微软雅黑";
+  color: #454545;
 }
-.main .details .text{
+.main .details .text {
   width: 100%;
-  font: 0.3rem/.5rem "微软雅黑";
+  font: 0.3rem/0.5rem "微软雅黑";
 }
-.main .details .text img{
+.main .details .text img {
   width: 100%;
 }
 

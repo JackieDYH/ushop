@@ -9,7 +9,7 @@
         <input type="search" v-model.trim="searchText" placeholder="搜索商品" />
         <i class="iconfont icon-fangdajing" @click="search"></i>
       </div>
-      <div class="menu">
+      <div class="menu" @click="$router.push('/login')">
         <span></span>
         <span></span>
         <span></span>
@@ -19,7 +19,7 @@
         <!-- 导航 -->
       <div class="navbtn">
         <ul>
-          <li v-for="item of catearr" :key="item.id">{{item.catename}}</li>
+          <li v-for="item of catearr" :key="item.id" @click="$router.push('/cate/'+item.id)">{{item.catename}}</li>
         </ul>
         <div class="arrow"></div>
       </div>
@@ -116,6 +116,7 @@
                 <div class="content"
                     v-for="(goods,idx) of item.content"
                     :key="idx"
+                    @click="$router.push('/detail/'+goods.id)"
                 >
                     <img :src="goods.img">
                     <div class="bt">

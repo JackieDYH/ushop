@@ -45,10 +45,27 @@ export default new Router({
           component: () => import('@/components/pages/detail'),
         },
         {
+          path: 'order/:uid',
+          name: 'ordergood',
+          component: () => import('@/components/pages/order'),
+        },
+        {
           path: '',
           redirect:'home'
         }        
       ]
+    },
+    {
+      path:'/login',
+      component: () => import('@/components/pages/user/login')
+    },
+    {
+      path:'/register',
+      component: () => import('@/components/pages/user/register')
+    },
+    {
+      path:'*',
+      redirect: '/'
     }
   ],
   // mode:"history",//路由模式 默认hash
