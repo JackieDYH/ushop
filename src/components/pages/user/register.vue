@@ -54,11 +54,9 @@ export default {
       } else {
         Toast({
           message: "用户名格式错误...",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       // 验证手机号
@@ -67,11 +65,9 @@ export default {
       } else {
         Toast({
           message: "手机号错误...",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       //验证密码
@@ -85,21 +81,17 @@ export default {
         } else {
           Toast({
             message: "密码格式错误...",
-            position: "bottom"
+            position: "bottom",
+            duration: 800
           });
-          setTimeout(() => {
-            instance.close();
-          }, 600);
           return false;
         }
       } else {
         Toast({
           message: "密码不能为空...",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       //   console.log(this.info)
@@ -129,12 +121,6 @@ export default {
 </script>
 
 <style scoped>
-.bg {
-  /* height: 100vh;
-    margin-top: -.8rem;
-    background-color: rgba(174, 178, 179, 0.801); */
-  /* background: -webkit-linear-gradient(left, #88ada6, #d6ecf0); */
-}
 .mint-header {
   background-color: #f26b11;
   height: 0.8rem;

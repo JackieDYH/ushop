@@ -6,6 +6,13 @@
   "description": "项目图标",
   "glyphs": [
     {
+      "icon_id": "2200153",
+      "name": "太空火箭",
+      "font_class": "rocketspacebus",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
       "icon_id": "248884",
       "name": "注册",
       "font_class": "zhuce",

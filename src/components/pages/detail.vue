@@ -68,14 +68,14 @@
       </div>
       <div class="btns">
         <span @click="cartadd">加入购物车</span>
-        <span>立即购买</span>
+        <span @click="add">立即购买</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 import { Indicator, Toast } from "mint-ui";
 export default {
   data() {
@@ -85,54 +85,92 @@ export default {
       attarr: [],
       num: 1, //商品数量
       attid: 0,
-      attribute:'',//选中的商品属性
+      attribute: "" //选中的商品属性
     };
   },
-  computed:{
-    ...mapGetters(['userinfo']),
+  computed: {
+    ...mapGetters(["userinfo", "cartlist"])
   },
   methods: {
-    // 加入购物车
-    cartadd(){
-      this.attrbtn(this.attid);
+    ...mapActions(["setCartlistSync"]),
+    // 立即购买
+    add() {
+      // 调用接口添加商品到数据库
+      this.cartadd(1);
 
-      let data = {};
-      data.uid = this.userinfo.uid;
-      data.goodsid = this.goodtxt.id;
-      data.num = this.num;
-      data.attribute = this.goodtxt.specsname +','+ this.attribute;
-      this.$http.post(this.$apis.cartadd,data).then(res=>{
-        console.log(res,11);
+      const uid = this.userinfo.uid;
+      this.$http.get(this.$apis.cartlist, { uid }).then(res => {
+        if (res.data.code == 200) {
+          let goods = res.data.list ? res.data.list : [];
+          goods.map(item => {
+            item.ischeck = false;
+            let arr = item.attribute.split(",");
+            item.attribute = { name: arr[0], bute: arr[1] };
+          });
+          let arrobj = goods.find(obj => {
+            return obj.goodsid == this.goodtxt.id;
+          });
+          let good = [];
+          good.push(arrobj);
+          this.setCartlistSync(good);
+          // this.$forceUpdate();
+          console.log(good, 222);
+        } else {
+          Indicator.open(res.data.msg);
+          setTimeout(() => {
+            Indicator.close();
+            this.$router.push("/login");
+          }, 600);
+        }
+      });
+      this.$router.push("/order");
+    },
+    // 加入购物车
+    cartadd(id) {
+      // 调用商品选中属性
+      this.attrbtn(this.attid);
+      // 格式化数据
+      let data = this.setData();
+      this.$http.post(this.$apis.cartadd, data).then(res => {
+        // console.log(res, 11);
         if (res.data.code == 200) {
           Indicator.open("添加成功...");
           setTimeout(() => {
             Indicator.close();
-            this.$router.push("/cart");
+            if (id != 1) this.$router.push("/cart");
           }, 600);
         } else {
           Indicator.open(res.data.msg);
           setTimeout(() => {
             Indicator.close();
+            this.$router.push("/login");
           }, 600);
         }
-      })
+      });
+    },
+    // 格式数据格式
+    setData() {
+      let data = {};
+      data.uid = this.userinfo.uid;
+      data.goodsid = this.goodtxt.id;
+      data.num = this.num;
+      data.attribute = this.goodtxt.specsname + "," + this.attribute;
+      return data;
     },
     // 商品属性选中
-    attrbtn(id){
+    attrbtn(id) {
       this.attid = id;
       this.attribute = this.attarr[id];
-      console.log(this.attribute)
+      console.log(this.attribute);
     },
     numDown() {
       if (this.num <= 1) {
         // this.num = 1;
         Toast({
           message: "数量不能小于1",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       } else {
         this.num--;
@@ -144,11 +182,9 @@ export default {
         // this.num = 99;
         Toast({
           message: "数量不能大于99",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       } else {
         this.num++;
@@ -292,8 +328,6 @@ export default {
   background: #e43a3d;
 }
 /* 商品详情 */
-.main .details {
-}
 .main .details .top {
   border-top: 0.2rem solid #f1f1f1;
   padding: 0 0.23rem;
@@ -304,7 +338,7 @@ export default {
 }
 .main .details .text {
   width: 100%;
-  font: 0.3rem/0.5rem "微软雅黑";
+  font: 0.24rem/0.4rem "微软雅黑";
 }
 .main .details .text img {
   width: 100%;
@@ -348,5 +382,11 @@ export default {
 }
 .footer .btns span:nth-child(2) {
   background-color: #e43a3d;
+}
+</style>
+
+<style>
+.main .details .text p{
+  padding: 0 .1rem;
 }
 </style>

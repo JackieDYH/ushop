@@ -13,7 +13,7 @@
           <!-- <em class=""></em> -->
           <input type="checkbox" v-model="item.ischeck" @click="ck(idx)" />
           <div class="good">
-            <img :src="item.img" />
+            <img :src="item.img" @click="$router.push('/detail/'+item.goodsid)" />
             <div class="txt">
               <h4>{{ item.goodsname }}</h4>
               <span>
@@ -95,6 +95,7 @@ export default {
     }
   },
   mounted() {
+    Indicator.open("数据加载中...");
     this.getCartlist();
   },
   filters: {
@@ -112,19 +113,26 @@ export default {
       MessageBox.confirm("", {
         message: "你确定删除吗？",
         title: "警告"
-      }).then(action => {
+      })
+        .then(action => {
           if (action == "confirm") {
             console.log(1);
             this.$http.post(this.$apis.cartdelete, { id }).then(res => {
-                console.log(res, 11);
-                if (res.data.code == 200) {
-                  this.goods.splice(idx,1);
-                  Indicator.open("删除成功...");
-                  setTimeout(() => {
-                    Indicator.close();
-                  }, 600);
-                }
-              });
+              console.log(res, 11);
+              if (res.data.code == 200) {
+                this.goods.splice(idx, 1);
+                Indicator.open("删除成功...");
+                setTimeout(() => {
+                  Indicator.close();
+                }, 600);
+              } else {
+                Indicator.open(res.data.msg);
+                setTimeout(() => {
+                  Indicator.close();
+                  this.$router.push("/login");
+                }, 600);
+              }
+            });
           }
         })
         .catch(err => {
@@ -135,6 +143,7 @@ export default {
     },
     // 结算
     order() {
+      // if(!this.userinfo.token)return;
       // 返回选中的商品
       let arr = this.goods.filter((value, idx) => {
         return value.ischeck == true;
@@ -143,27 +152,23 @@ export default {
       if (arr.length == 0) {
         Toast({
           message: "未勾选商品",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       // 添加到本地厂库
       this.setCartlistSync(arr);
-      this.$router.push("order");
+      this.$router.push("/order");
     },
     //-
     btndown(type, id, idx) {
       if (this.goods[idx].num <= 1) {
         Toast({
           message: "数量不能小于1",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       this.throttle(type, id, idx);
@@ -175,11 +180,9 @@ export default {
       if (this.goods[idx].num >= 99) {
         Toast({
           message: "数量不能大于99",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       this.throttle(type, id, idx);
@@ -218,11 +221,9 @@ export default {
         } else {
           Toast({
             message: "您点的太快了！",
-            position: "bottom"
+            position: "bottom",
+            duration: 800
           });
-          setTimeout(() => {
-            instance.close();
-          }, 600);
           return false;
         }
       }
@@ -245,15 +246,25 @@ export default {
     getCartlist() {
       const uid = this.userinfo.uid;
       this.$http.get(this.$apis.cartlist, { uid }).then(res => {
-        // console.log(res.data, '购物车数据');
-        // this.goods = res.data.list;
-        this.goods = res.data.list ? res.data.list : [];
-        this.goods.map(item => {
-          item.ischeck = false;
-          let arr = item.attribute.split(",");
-          // this.attribute.push({ name: arr[0], bute: arr[1] });
-          item.attribute = { name: arr[0], bute: arr[1] };
-        });
+        if (res.data.code == 200) {
+          this.goods = res.data.list ? res.data.list : [];
+          this.goods.map(item => {
+            item.ischeck = false;
+            let arr = item.attribute.split(",");
+            // this.attribute.push({ name: arr[0], bute: arr[1] });
+            item.attribute = { name: arr[0], bute: arr[1] };
+          });
+          setTimeout(() => {
+            Indicator.close();
+          }, 600);
+        } else {
+          Indicator.open(res.data.msg);
+          setTimeout(() => {
+            Indicator.close();
+            this.$router.push("/login");
+          }, 600);
+        }
+
         console.log(this.goods, "购物车数据");
       });
     },
@@ -284,13 +295,13 @@ export default {
 }
 
 /* 空 */
-.main .kong{
+.main .kong {
   padding-top: 20%;
   text-align: center;
-  font-size: .5rem;
+  font-size: 0.5rem;
   color: pink;
 }
-.main .kong i{
+.main .kong i {
   font-size: 1.5rem;
   color: #f26b11;
 }

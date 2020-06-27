@@ -57,23 +57,31 @@ export default {
     }
   },
   methods: {
-    //   搜索
+    // 搜索
     search(t) {
       if (!this.searchText) return;
       this.$axios({
         url: this.$apis.getsearch,
         params: { searchText: this.searchText }
       }).then(res => {
-        Indicator.open("加载中...");
-        setTimeout(() => {
-          Indicator.close();
-        //   this.searchText = "";
-          if (res.data.list == null) {
-            this.goodslist = [];
-          } else {
-            this.goodslist = res.data.list;
-          }
-        }, 600);
+        if (res.data.code == 200) {
+          Indicator.open("加载中...");
+          setTimeout(() => {
+            Indicator.close();
+            //   this.searchText = "";
+            if (res.data.list == null) {
+              this.goodslist = [];
+            } else {
+              this.goodslist = res.data.list;
+            }
+          }, 600);
+        } else {
+          Indicator.open(res.data.msg);
+          setTimeout(() => {
+            Indicator.close();
+            this.$router.push("/");
+          }, 600);
+        }
       });
     },
     //   获取商品信息

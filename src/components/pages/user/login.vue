@@ -40,18 +40,15 @@ export default {
     //   使用vuex助手函数
       ...mapActions(['setUserinfoSync']),
     login() {
-        console.log(11)
       // 验证手机号
       const reg = /^1[345789]\d{9}$/;
       if (reg.test(this.info.phone)) {
       } else {
         Toast({
           message: "手机号错误...",
-          position: "bottom"
+          position: "bottom",
+          duration: 800
         });
-        setTimeout(() => {
-          instance.close();
-        }, 600);
         return false;
       }
       this.$axios({
@@ -81,12 +78,6 @@ export default {
 </script>
 
 <style scoped>
-.bg {
-  /* height: 100vh;
-    margin-top: -.8rem;
-    background-color: rgba(174, 178, 179, 0.801); */
-  /* background: -webkit-linear-gradient(left, #88ada6, #d6ecf0); */
-}
 .mint-header {
   background-color: #f26b11;
   height: 0.8rem;

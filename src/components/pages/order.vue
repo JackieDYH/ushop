@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { Indicator, Toast } from "mint-ui";
 export default {
   data() {
@@ -137,20 +137,18 @@ export default {
     ...mapGetters(["cartlist"]),
     goodsPrice() {
       let sum = 0;
+      // let cartlist = this.cartlist ? this.cartlist : [];
       this.cartlist.map(item => {
         sum += item.price * item.num;
       });
-      if (this.integral > sum) {
-        Toast({
-          message: "积分不能大于总价格",
-          position: "bottom"
-        });
-        this.integral = sum;
-        setTimeout(() => {
-          instance.close();
-        }, 600);
-        // return false;
-      }
+      // if (this.integral > sum) {
+      //   Toast({
+      //     message: "积分不能大于总价格",
+      //     position: "bottom",
+      //     duration: 800
+      //   });
+      //   this.integral = sum;
+      // }
       return sum - this.integral;
     }
   },
@@ -162,18 +160,28 @@ export default {
   },
   mounted() {},
   methods: {
+    ...mapActions(["setCartlistSync"]),
     //提交订单 清空购物车
     submit() {
-      console.log(this.cartlist);
-      this.cartlist.map(goods=>{
-        this.$http.post(this.$apis.cartdelete,{id:goods.id}).then(res=>{
-          Indicator.open("购买成功...");
-          setTimeout(() => {
-            Indicator.close();
-            this.$router.push("/");
-          }, 600);
-        })
-      })
+      // console.log(this.cartlist);
+      this.cartlist.map(goods => {
+        this.$http.post(this.$apis.cartdelete, { id: goods.id }).then(res => {
+          if (res.data.code == 200) {
+            Indicator.open("购买成功...");
+            setTimeout(() => {
+              this.$router.push("/");
+              Indicator.close();
+              this.setCartlistSync([]); //清空本地数据
+            }, 600);
+          } else {
+            Indicator.open(res.data.msg);
+            setTimeout(() => {
+              Indicator.close();
+              this.$router.push("/login");
+            }, 600);
+          }
+        });
+      });
     }
   }
 };
