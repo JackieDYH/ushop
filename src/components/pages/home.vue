@@ -9,10 +9,12 @@
         <input type="search" v-model.trim="searchText" placeholder="搜索商品" />
         <i class="iconfont icon-fangdajing" @click="search"></i>
       </div>
-      <div class="menu" @click="$router.push('/login')">
+      <div class="menu">
+        <b @click="$router.push('/me')" v-if="userinfo.nickname">{{userinfo.nickname}}</b>
+        <b @click="$router.push('/login')" v-else>登录</b>
+        <!-- <span></span>
         <span></span>
-        <span></span>
-        <span></span>
+        <span></span> -->
       </div>
     </div>
     <div class="main">
@@ -134,6 +136,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data(){
         return{
@@ -146,6 +149,9 @@ export default {
             goodsarr:[],//商品
             searchText:'',//搜索
         }
+    },
+    computed:{
+        ...mapGetters(['userinfo']),
     },
     methods:{
         // 搜索
@@ -222,6 +228,10 @@ export default {
   height: 0.14rem;
   border-radius: 50%;
   background-color: #333;
+}
+.head .menu b{
+    color: #f26b11;
+    font-size: .28rem;
 }
 
 /* navbtn 导航部分 */

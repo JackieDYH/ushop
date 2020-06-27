@@ -8,6 +8,7 @@
     </mt-header>
     <div class="main">
       <div class="reg">
+        <i class="iconfont icon-zhuce"></i>
         <div>
           <i class="iconfont icon-user-line"></i>
           <input type="text" placeholder="用户名 长度8位" v-model.trim="info.nickname" />
@@ -55,10 +56,10 @@ export default {
           message: "用户名格式错误...",
           position: "bottom"
         });
-        return false;
         setTimeout(() => {
           instance.close();
         }, 600);
+        return false;
       }
       // 验证手机号
       const reg = /^1[345789]\d{9}$/;
@@ -68,10 +69,10 @@ export default {
           message: "手机号错误...",
           position: "bottom"
         });
-        return false;
         setTimeout(() => {
           instance.close();
         }, 600);
+        return false;
       }
       //验证密码
       if (this.pwd !== "" && this.pwd2 !== "") {
@@ -86,20 +87,20 @@ export default {
             message: "密码格式错误...",
             position: "bottom"
           });
-          return false;
           setTimeout(() => {
             instance.close();
           }, 600);
+          return false;
         }
       } else {
         Toast({
           message: "密码不能为空...",
           position: "bottom"
         });
-        return false;
         setTimeout(() => {
           instance.close();
         }, 600);
+        return false;
       }
       //   console.log(this.info)
 
@@ -145,8 +146,15 @@ export default {
 }
 .main .reg {
   width: 80%;
-  transform: translateY(50%);
+  transform: translateY(10%);
   margin: 0 auto;
+}
+.main .reg>i{
+  display: block;
+  font-size: 1rem;
+  padding-bottom: .2rem;
+  color: #f26b11;
+  text-align: center;
 }
 .main .reg div {
   border: 0.01rem solid #f26b11;
@@ -176,6 +184,7 @@ export default {
 }
 .main .reg span {
   float: right;
+  font-size: .25rem;
   color: rgb(168, 168, 240);
   text-decoration: underline;
 }

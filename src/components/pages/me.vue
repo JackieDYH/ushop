@@ -1,17 +1,18 @@
 <template>
   <div>
     <mt-header fixed title="我的">
-      <router-link to="/cate" icon="back" slot="left">
+      <router-link to="/" icon="back" slot="left">
         <mt-button icon="back"></mt-button>
       </router-link>
-      <mt-button icon="more" slot="right"></mt-button>
+      <mt-button slot="right" class="iconfont icon-tuichudenglu" @click="quit" v-if="userinfo.nickname"></mt-button>
+      <mt-button slot="right" @click="$router.push('/login')" v-else>登录</mt-button>
     </mt-header>
     <!-- 个人信息 -->
     <div class="head">
             <img src="/static/img/mine.png">
             <div class="txt">
                 <span>{{userinfo.nickname}}</span>
-                <i>{{userinfo.phone}}</i>
+                <i>Tel:{{userinfo.phone}}</i>
             </div>
         </dv>
     </div>
@@ -81,10 +82,38 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters,mapActions } from 'vuex'
+import { Indicator,MessageBox } from "mint-ui";
 export default {
     computed:{
         ...mapGetters(['userinfo']),
+    },
+    methods:{
+        ...mapActions(['setUserinfoSync']),
+        quit(){
+            MessageBox.confirm("", {
+                message: "你确定退出登录吗？",
+                title: "提示"
+            }).then(action => {
+                if (action == "confirm") {
+                    // console.log(1);
+                    this.setUserinfoSync({});
+                    Indicator.open("退出成功...");
+                    setTimeout(() => {
+                        Indicator.close();
+                        this.$router.push('/');
+                    }, 600);
+                }
+            }).catch(err => {
+                if (err == "cancel") {
+                    // console.log(2);
+                    Indicator.open("取消成功...");
+                    setTimeout(() => {
+                        Indicator.close();
+                    }, 600);
+                }
+            });
+        }
     }
 };
 </script>
@@ -95,6 +124,9 @@ export default {
   height: 0.8rem;
   /* box-sizing: border-box; */
   padding: 0.35rem 0.2rem 0.2rem;
+}
+.icon-tuichudenglu{
+    font-size: .35rem;
 }
 /* 信息 */
 .head{

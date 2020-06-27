@@ -45,7 +45,7 @@ export default new Router({
           component: () => import('@/components/pages/detail'),
         },
         {
-          path: 'order/:uid',
+          path: 'order',
           name: 'ordergood',
           component: () => import('@/components/pages/order'),
         },

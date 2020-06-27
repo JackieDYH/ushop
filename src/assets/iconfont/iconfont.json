@@ -6,6 +6,34 @@
   "description": "项目图标",
   "glyphs": [
     {
+      "icon_id": "248884",
+      "name": "注册",
+      "font_class": "zhuce",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "248887",
+      "name": "登录",
+      "font_class": "denglu",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "3094868",
+      "name": "商城",
+      "font_class": "shangcheng",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "12705237",
+      "name": "退出登录",
+      "font_class": "tuichudenglu",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
       "icon_id": "1010107",
       "name": "密码",
       "font_class": "mima",

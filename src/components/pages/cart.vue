@@ -11,112 +11,251 @@
       <div class="list" v-for="(item,idx) of goods" :key="idx">
         <div class="left">
           <!-- <em class=""></em> -->
-          <input type="checkbox" v-model="item.ischeck" @click="ck(idx)">
+          <input type="checkbox" v-model="item.ischeck" @click="ck(idx)" />
           <div class="good">
             <img :src="item.img" />
             <div class="txt">
               <h4>{{ item.goodsname }}</h4>
               <span>
-                {{ attribute[idx].name }}
-                <i>{{ attribute[idx].bute }}</i>
+                {{ item.attribute.name }}
+                <i>{{ item.attribute.bute }}</i>
               </span>
-              <b>￥{{ item.price }}</b>
+              <!-- <b>￥{{ item.price }}</b> -->
+              <b>{{ item.price | formatPrice() }}</b>
             </div>
           </div>
         </div>
         <div class="right" @touchstart.self="start" @touchmove.self="move" @touchend.self="end">
           <div class="num">
-            <i class="iconfont icon-jian" @click="btndown"></i>
-            {{ item.num }}
-            <i class="iconfont icon-icon-" @click="btnup"></i>
+            <i class="iconfont icon-jian" @click="btndown(1,item.id,idx)"></i>
+            <b>{{ item.num }}</b>
+            <i class="iconfont icon-icon-" @click="btnup(2,item.id,idx)"></i>
           </div>
-          <span v-show="endX<startX">删除</span>
+          <span v-show="endX<startX" @click="cartdel(item.id,idx)">删除</span>
         </div>
       </div>
-      
+      <div class="kong" v-show="goods.length == 0">
+        <i class="iconfont icon-huochedong"></i>
+        <h2>您的购物车空空如也</h2>
+        <h3>快快去把购物车填满吧</h3>
+      </div>
     </div>
 
     <!-- 尾部结算 -->
     <div class="footer">
       <div class="left">
         <!-- <em class="active"></em> -->
-        <input type="checkbox" v-model="checkAll" @click="ckAll">
+        <input type="checkbox" v-model="checkAll" @click="ckAll" />
         <i>全选</i>
       </div>
       <div class="right">
         <div class="lm">
           <div class="txt1">
             总计:
-            <i>{{ sumPrice }}</i>
+            <i>{{ sumPrice | formatPrice() }}</i>
           </div>
           <div class="txt2">不含运费，已优惠￥00.0</div>
         </div>
-        <div class="lbtn" @click="$router.push('/order/'+1)">去结算</div>
+        <div class="lbtn" @click="order">去结算</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import { Indicator, Toast, MessageBox } from "mint-ui";
 export default {
   data() {
     return {
-      startX: 0,
+      startX: 0, //滑动
       endX: 0,
-      goods:[],
-      attribute:[],
-      checkAll:false,
+      goods: [], //商品
+      // attribute: [],
+      checkAll: false,
+      lastTime: 0 //默认上一次点击时间为0 ,
     };
   },
   computed: {
     ...mapGetters(["userinfo"]),
 
     //计算价格
-    sumPrice(){
+    sumPrice() {
       let sum = 0;
       // 选中
-      this.goods.map(item=>{
-        if(item.ischeck){
+      this.goods.map(item => {
+        if (item.ischeck) {
           sum += item.price * item.num;
         }
       });
-      this.checkAll = this.goods.every(item=>{
+      this.checkAll = this.goods.every(item => {
         return item.ischeck;
-      })
+      });
       return sum;
     }
   },
   mounted() {
     this.getCartlist();
   },
+  filters: {
+    //局部 过滤器
+    formatPrice(val, n = 2) {
+      return "￥ " + val.toFixed(n) + " 元";
+    }
+  },
   methods: {
+    // 购物车厂库
+    ...mapActions(["setCartlistSync"]),
+    // 删除商品
+    cartdel(id, idx) {
+      console.log(id, idx, 222);
+      MessageBox.confirm("", {
+        message: "你确定删除吗？",
+        title: "警告"
+      }).then(action => {
+          if (action == "confirm") {
+            console.log(1);
+            this.$http.post(this.$apis.cartdelete, { id }).then(res => {
+                console.log(res, 11);
+                if (res.data.code == 200) {
+                  this.goods.splice(idx,1);
+                  Indicator.open("删除成功...");
+                  setTimeout(() => {
+                    Indicator.close();
+                  }, 600);
+                }
+              });
+          }
+        })
+        .catch(err => {
+          if (err == "cancel") {
+            console.log(2);
+          }
+        });
+    },
+    // 结算
+    order() {
+      // 返回选中的商品
+      let arr = this.goods.filter((value, idx) => {
+        return value.ischeck == true;
+      });
+      // console.log(arr,11)
+      if (arr.length == 0) {
+        Toast({
+          message: "未勾选商品",
+          position: "bottom"
+        });
+        setTimeout(() => {
+          instance.close();
+        }, 600);
+        return false;
+      }
+      // 添加到本地厂库
+      this.setCartlistSync(arr);
+      this.$router.push("order");
+    },
+    //-
+    btndown(type, id, idx) {
+      if (this.goods[idx].num <= 1) {
+        Toast({
+          message: "数量不能小于1",
+          position: "bottom"
+        });
+        setTimeout(() => {
+          instance.close();
+        }, 600);
+        return false;
+      }
+      this.throttle(type, id, idx);
+      // this.goods[idx].num--;
+      // this.editCart(type, id);
+    },
+    //+
+    btnup(type, id, idx) {
+      if (this.goods[idx].num >= 99) {
+        Toast({
+          message: "数量不能大于99",
+          position: "bottom"
+        });
+        setTimeout(() => {
+          instance.close();
+        }, 600);
+        return false;
+      }
+      this.throttle(type, id, idx);
+      // this.goods[idx].num++;
+      // this.editCart(type, id);
+    },
+    //修改购物车
+    editCart(type, id) {
+      this.$http.post(this.$apis.cartedit, { type, id }).then(res => {
+        console.log(res, 111);
+      });
+    },
+    goodsJson() {
+      this.goods = JSON.parse(JSON.stringify(this.goods));
+    },
+    // 截流
+    throttle(type, id, idx) {
+      //获取当前时间的时间戳
+      let now = new Date().valueOf();
+      //第一次点击
+      if (this.lastTime == 0) {
+        console.log("触发事件");
+        this.editCart(type, id);
+        this.goods[idx].num =
+          type == 1 ? --this.goods[idx].num : ++this.goods[idx].num;
+        this.lastTime = now;
+      } else {
+        if (now - this.lastTime > 1000) {
+          //重置上一次点击时间，1000是我自己设置的1秒间隔，根据自己的需要更改
+          this.lastTime = now;
+          // console.log("间隔大于1秒，触发方法");
+          //添加自己要调用的方法
+          this.editCart(type, id);
+          this.goods[idx].num =
+            type == 1 ? --this.goods[idx].num : ++this.goods[idx].num;
+        } else {
+          Toast({
+            message: "您点的太快了！",
+            position: "bottom"
+          });
+          setTimeout(() => {
+            instance.close();
+          }, 600);
+          return false;
+        }
+      }
+    },
     // 全选
-    ckAll(){
-      this.goods = JSON.parse(JSON.stringify(this.goods))
-      this.goods.map(item=>{
+    ckAll() {
+      this.goods = JSON.parse(JSON.stringify(this.goods));
+      this.goods.map(item => {
         item.ischeck = !this.checkAll;
-      })
+      });
     },
     // 复选框
-    ck(id){
-      let arr = JSON.parse(JSON.stringify(this.goods))
-      arr[id].ischeck = !arr[id].ischeck
-      this.goods = arr
+    ck(id) {
+      let arr = JSON.parse(JSON.stringify(this.goods));
+      arr[id].ischeck = !arr[id].ischeck;
+      this.goods = arr;
+      // this.goods[id].ischeck = !this.goods[id].ischeck
     },
     // 获取购物车信息
     getCartlist() {
       const uid = this.userinfo.uid;
       this.$http.get(this.$apis.cartlist, { uid }).then(res => {
-          // console.log(res.data, '购物车数据');
-          this.goods = res.data.list;
-          this.goods.map(item=>{
-            item.ischeck = false;
-            let arr = item.attribute.split(',');
-            this.attribute.push({name:arr[0],bute:arr[1]})
-          })
-          console.log(this.goods,'购物车数据')
+        // console.log(res.data, '购物车数据');
+        // this.goods = res.data.list;
+        this.goods = res.data.list ? res.data.list : [];
+        this.goods.map(item => {
+          item.ischeck = false;
+          let arr = item.attribute.split(",");
+          // this.attribute.push({ name: arr[0], bute: arr[1] });
+          item.attribute = { name: arr[0], bute: arr[1] };
         });
+        console.log(this.goods, "购物车数据");
+      });
     },
     start: function(e) {
       this.startX = e.touches[0].clientX;
@@ -128,12 +267,6 @@ export default {
       console.log(this.startX);
       console.log(this.endX);
       //结束的坐标点大于开始的坐标点，认为用户已经从左往右滑动了屏幕
-    },
-    btndown() {
-      console.log(11);
-    },
-    btnup() {
-      console.log(22);
     }
   }
 };
@@ -150,8 +283,20 @@ export default {
   margin-bottom: 1rem;
 }
 
+/* 空 */
+.main .kong{
+  padding-top: 20%;
+  text-align: center;
+  font-size: .5rem;
+  color: pink;
+}
+.main .kong i{
+  font-size: 1.5rem;
+  color: #f26b11;
+}
+
 /* 复选框 */
-input{
+input {
   flex-shrink: 0;
   display: inline-block;
   width: 0.34rem;
@@ -171,15 +316,15 @@ input{
 .main .list .left {
   display: flex;
   align-items: center;
-  width: 60%;
+  width: 70%;
 }
 .main .list .left .good {
   display: flex;
   align-items: center;
 }
 .main .list .left .good img {
-  width: 1.02rem;
-  height: 0.82rem;
+  width: 1.1rem;
+  height: 1.2rem;
   padding-right: 0.34rem;
 }
 .main .list .left .good .txt {
@@ -218,7 +363,7 @@ input{
   line-height: 0.6rem;
   padding-right: 0.08rem;
 }
-.main .list .right .num span {
+.main .list .right .num b {
   padding: 0 0.02rem;
 }
 .main .list .right .num i {

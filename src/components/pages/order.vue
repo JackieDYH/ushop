@@ -28,22 +28,23 @@
       </div>
       <!-- 商品信息 -->
       <div class="good">
-        <div class="item">
+        <div class="item" v-for="(item,idx) of cartlist" :key="idx">
           <div class="left">
-            <img src="/static/img/shop_4.jpg" />
+            <img :src="item.img" />
             <div class="txt1">
-              <h3>雅诗兰黛护肤霜雅诗兰黛护肤霜雅诗兰黛护肤霜</h3>
+              <h3>{{item.goodsname}}</h3>
               <b>
-                规格
-                <i>50g</i>
+                {{ item.attribute.name }}
+                <i>{{ item.attribute.bute }}</i>
               </b>
             </div>
           </div>
           <div class="right">
             <span>
-              <i>￥</i>1200.00
+              <i>￥</i>
+              {{ item.price | formatPrice() }}
             </span>
-            <b>x2</b>
+            <b>x{{ item.num }}</b>
           </div>
         </div>
         <div class="item2">
@@ -63,8 +64,19 @@
           <span>无可用</span>
         </div>
         <div class="num">
-          <span>使用积分</span>
-          <span>可用50积分</span>
+          <span>使用积分：{{integral}}</span>
+          <mt-range
+            v-model.number="integral"
+            :min="0"
+            :max="goodsPrice + integral"
+            :step="1"
+            :bar-height="5"
+          >
+            <div slot="start">0</div>
+            <div slot="end">{{goodsPrice + integral}}</div>
+          </mt-range>
+          <!-- <input type="number" placeholder="输入积分" v-model.number="integral" /> -->
+          <!-- <span>可用50积分</span> -->
         </div>
       </div>
       <!-- 结算 -->
@@ -79,7 +91,8 @@
           </div>
           <div class="right">
             <span>
-              <i>￥</i>68.00
+              <i>￥</i>
+              {{goodsPrice + integral | formatPrice()}}
             </span>
             <span>
               <i>+￥</i>00.00
@@ -91,18 +104,19 @@
               <i>-￥</i>00.00
             </span>
             <span>
-              <i>-￥</i>00.00
+              <i>-￥</i>
+              {{ integral | formatPrice() }}
             </span>
           </div>
         </div>
         <div class="pay">
           <span>
             实付金额:
-            <i>￥68.00</i>
+            <i>￥{{goodsPrice | formatPrice()}}</i>
           </span>
         </div>
         <div class="btn">
-          <span>提交订单</span>
+          <span @click="submit">提交订单</span>
         </div>
       </div>
     </div>
@@ -110,10 +124,65 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+import { Indicator, Toast } from "mint-ui";
+export default {
+  data() {
+    return {
+      integral: 0 //积分
+    };
+  },
+  computed: {
+    // 获取购物车商品
+    ...mapGetters(["cartlist"]),
+    goodsPrice() {
+      let sum = 0;
+      this.cartlist.map(item => {
+        sum += item.price * item.num;
+      });
+      if (this.integral > sum) {
+        Toast({
+          message: "积分不能大于总价格",
+          position: "bottom"
+        });
+        this.integral = sum;
+        setTimeout(() => {
+          instance.close();
+        }, 600);
+        // return false;
+      }
+      return sum - this.integral;
+    }
+  },
+  filters: {
+    //局部 过滤器
+    formatPrice(val, n = 2) {
+      return val.toFixed(n);
+    }
+  },
+  mounted() {},
+  methods: {
+    //提交订单 清空购物车
+    submit() {
+      console.log(this.cartlist);
+      this.cartlist.map(goods=>{
+        this.$http.post(this.$apis.cartdelete,{id:goods.id}).then(res=>{
+          Indicator.open("购买成功...");
+          setTimeout(() => {
+            Indicator.close();
+            this.$router.push("/");
+          }, 600);
+        })
+      })
+    }
+  }
+};
 </script>
 
 <style scoped>
+.mt-range {
+  width: 50%;
+}
 .mint-header {
   background-color: #f26b11;
   height: 0.8rem;
@@ -172,10 +241,11 @@ export default {};
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 0.01rem solid #f1f1f1;
 }
 .main .good .item .left {
   display: flex;
-  width: 50%;
+  width: 70%;
   align-items: center;
 }
 .main .good .item .left img {
@@ -183,10 +253,13 @@ export default {};
   height: 1.2rem;
   padding: 0.2rem 0.27rem 0.2rem 0.06rem;
 }
+.main .good .item .left .txt1 {
+  width: 70%;
+}
 .main .good .item .left .txt1 h3 {
   font: 0.26rem/0.47rem "微软雅黑";
   color: #646464;
-  width: 50%;
+  width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -220,7 +293,6 @@ export default {};
   align-items: center;
   font: 0.26rem/0.95rem "微软雅黑";
   color: #666;
-  border-top: 0.01rem solid #f1f1f1;
 }
 .main .good .item2 .right b {
   color: #f26b11;
@@ -235,9 +307,17 @@ export default {};
 .main .disco .num {
   padding: 0 0.26rem;
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
   font: 0.26rem/1.01rem "微软雅黑";
   color: #666;
+}
+.main .disco .num input {
+  width: 1.2rem;
+  height: 0.44rem;
+  border: 1px solid #f26b11;
+  border-radius: 0.2rem;
+  padding: 0 0.1rem;
 }
 .main .disco .num span:last-child {
   color: #999;
@@ -282,7 +362,7 @@ export default {};
 .main .settle .pay span {
   font: 0.36rem/100% "微软雅黑";
   color: #646464;
-  padding-right: .26rem;
+  padding-right: 0.26rem;
 }
 .main .settle .pay span i {
   color: #ef3536;

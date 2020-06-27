@@ -8,6 +8,7 @@
     </mt-header>
     <div class="main">
       <div class="reg">
+        <i class="iconfont icon-denglu"></i>
         <div>
           <i class="iconfont icon-shouji"></i>
           <input type="tel" placeholder="手机号" v-model.trim="info.phone" />
@@ -30,8 +31,8 @@ export default {
   data() {
     return {
       info: {
-        phone: "",
-        password: ""
+        phone: "13014039091",
+        password: "123456"
       }
     };
   },
@@ -48,10 +49,10 @@ export default {
           message: "手机号错误...",
           position: "bottom"
         });
-        return false;
         setTimeout(() => {
           instance.close();
         }, 600);
+        return false;
       }
       this.$axios({
         url: this.$apis.login,
@@ -97,8 +98,15 @@ export default {
 }
 .main .reg {
   width: 80%;
-  transform: translateY(50%);
+  transform: translateY(20%);
   margin: 0 auto;
+}
+.main .reg>i{
+  display: block;
+  font-size: 1rem;
+  padding-bottom: .2rem;
+  color: #f26b11;
+  text-align: center;
 }
 .main .reg div {
   border: 0.01rem solid #f26b11;
@@ -128,6 +136,7 @@ export default {
 }
 .main .reg span {
   float: right;
+  font-size: .25rem;
   color: rgb(168, 168, 240);
   text-decoration: underline;
 }

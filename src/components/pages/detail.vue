@@ -64,7 +64,7 @@
     <div class="footer">
       <div class="cart">
         <i class="iconfont icon-48"></i>
-        <span>购物车</span>
+        <span @click="$router.push('/cart')">购物车</span>
       </div>
       <div class="btns">
         <span @click="cartadd">加入购物车</span>
@@ -130,10 +130,10 @@ export default {
           message: "数量不能小于1",
           position: "bottom"
         });
-        return false;
         setTimeout(() => {
           instance.close();
         }, 600);
+        return false;
       } else {
         this.num--;
         // this.cartadd();//调用接口存储商品
@@ -146,10 +146,10 @@ export default {
           message: "数量不能大于99",
           position: "bottom"
         });
-        return false;
         setTimeout(() => {
           instance.close();
         }, 600);
+        return false;
       } else {
         this.num++;
         // this.cartadd();//调用接口存储商品
