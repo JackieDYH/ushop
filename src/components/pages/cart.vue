@@ -8,7 +8,11 @@
     </mt-header>
     <!-- 购物车列表 -->
     <div class="main">
-      <div class="list" v-for="(item,idx) of goods" :key="idx">
+      <div :class="{list:true,activeleft:item.isshow}" v-for="(item,idx) of goods" :key="idx" 
+        @touchstart="start($event,idx)"
+        @touchmove="move($event,idx)"
+        @touchend="end(idx)"
+      >
         <div class="left">
           <!-- <em class=""></em> -->
           <input type="checkbox" v-model="item.ischeck" @click="ck(idx)" />
@@ -25,13 +29,14 @@
             </div>
           </div>
         </div>
-        <div class="right" @touchstart.self="start" @touchmove.self="move" @touchend.self="end">
+        <!-- @touchstart.self="start" @touchmove.self="move" @touchend.self="end" -->
+        <div class="right" >
           <div class="num">
             <i class="iconfont icon-jian" @click="btndown(1,item.id,idx)"></i>
             <b>{{ item.num }}</b>
             <i class="iconfont icon-icon-" @click="btnup(2,item.id,idx)"></i>
           </div>
-          <span v-show="endX<startX" @click="cartdel(item.id,idx)">删除</span>
+          <span v-show="item.isshow" @click="cartdel(item.id,idx)">删除</span>
         </div>
       </div>
       <div class="kong" v-show="goods.length == 0">
@@ -253,6 +258,9 @@ export default {
             let arr = item.attribute.split(",");
             // this.attribute.push({ name: arr[0], bute: arr[1] });
             item.attribute = { name: arr[0], bute: arr[1] };
+            item.startx = 0;//滑动
+            item.endx = 0;
+            item.isshow = false;//显示隐藏
           });
           setTimeout(() => {
             Indicator.close();
@@ -268,16 +276,26 @@ export default {
         console.log(this.goods, "购物车数据");
       });
     },
-    start: function(e) {
-      this.startX = e.touches[0].clientX;
+    // 购物车左滑事件 ---重要
+    start: function(e,idx) {
+      // console.log(e.targetTouches[0].clientX,111)
+      this.goods[idx].startx = e.targetTouches[0].clientX;
+      this.goods[idx].endx = 0;
     },
-    move(e) {
-      this.endX = e.touches[0].clientX;
+    move(e,idx) {
+      // console.log(e.targetTouches[0].clientX,222)
+      this.goods[idx].endx = e.targetTouches[0].clientX;
     },
-    end(e) {
-      console.log(this.startX);
-      console.log(this.endX);
+    end(idx) {
       //结束的坐标点大于开始的坐标点，认为用户已经从左往右滑动了屏幕
+      if(this.goods[idx].endx == 0)return;
+      if(this.goods[idx].startx > this.goods[idx].endx){
+        this.goods[idx].isshow = true;
+      }else{
+        this.goods[idx].isshow = false;
+      }
+      this.$forceUpdate();//强制刷新  重要
+      // console.log(this.goods[idx].isshow,3333333)
     }
   }
 };
@@ -316,6 +334,9 @@ input {
 }
 
 /* 商品列表信息 */
+.main .activeleft{
+  margin-left: -.45rem;
+}
 .main .list {
   height: 1.72rem;
   display: flex;

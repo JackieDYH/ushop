@@ -60,7 +60,7 @@
       <div class="seckill">
         <div class="left">
           <p class="txt1">限时秒杀</p>
-          <p class="txt2">每天零点场 好货秒不停</p>
+          <p class="txt2">{{ !seckill.title ? '每天零点场 好货秒不停' : seckill.title }}</p>
           <div v-if="seckill.length !== 0">
             <p class="txt3">
               <span>{{h}}</span>
@@ -73,8 +73,8 @@
             <img :src="seckill.img" @click="$router.push('/detail/'+seckill.goodsid)" />
           </div>
           <div class="nul" v-else>
-              <i class="iconfont icon-rocketspacebus"></i>
-              <h2>暂无秒杀商品</h2>
+            <i class="iconfont icon-rocketspacebus"></i>
+            <h2>暂无秒杀商品</h2>
           </div>
           <span v-show="seckill.length == null">
             <!-- <i>￥</i> -->
@@ -210,45 +210,96 @@ export default {
           this.bannerarr = bannerres.data.list;
           this.goodsarr = goodsres.data.list;
           this.seckill = getseckill.data.list ? getseckill.data.list[0] : [];
-        //   console.log(getseckill.data.list);
+          //   console.log(getseckill.data.list);
+          // 验证秒杀开始时间是否过期
+          if (
+            new Date().getTime() >= parseInt(this.seckill["begintime"]) &&
+            new Date().getTime() <= parseInt(this.seckill["endtime"])
+          ) {
+            // 在开始和结束时间范围内
+            console.log(
+              new Date().getTime() >= parseInt(this.seckill["begintime"])
+            );
+            console.log(
+              new Date().getTime() <= parseInt(this.seckill["endtime"])
+            );
+            // 计算当前时间 - 结束时间
+            let time = Math.abs(new Date().getTime() - parseInt(this.seckill["endtime"]));
+            //转成秒
+            time /= 1000;
+            // 天
+            let d = parseInt(time / 86400);
+            // 时
+            let h = parseInt((time % 86400) / 3600);
+            // 分
+            let m = parseInt((time % 3600) / 60);
+            // 秒
+            let s = parseInt(time % 60);
+            let t = setInterval(() => {
+              s--;
+              if (s < 0) {
+                m--;
+                s = 59;
+              }
+              if (m < 0) {
+                h--;
+                m = 59;
+              }
+              if (h < 0) {
+                d--;
+                h = 23;
+              }
+              if (d < 0) {
+                d = h = m = s = 0;
+                clearInterval(t); //清除定时器
+              }
+              this.h = h < 10 ? "0" + h : h;
+              this.m = m < 10 ? "0" + m : m;
+              this.s = s < 10 ? "0" + s : s;
+              // console.log(d, h, m, s, 111111);
+            }, 1000);
+          } else {
+            console.log('秒杀过期');
+            this.seckill = [];
+          }
           // 计算差值 毫秒
-          let time = Math.abs(
-            parseInt(this.seckill["endtime"]) -
-              parseInt(this.seckill["begintime"])
-          );
-          //转成秒
-          time /= 1000;
-          // 天
-          let d = parseInt(time / 86400);
-          // 时
-          let h = parseInt((time % 86400) / 3600);
-          // 分
-          let m = parseInt((time % 3600) / 60);
-          // 秒
-          let s = parseInt(time % 60);
-          let t = setInterval(() => {
-            s--;
-            if (s < 0) {
-              m--;
-              s = 59;
-            }
-            if (m < 0) {
-              h--;
-              m = 59;
-            }
-            if (h < 0) {
-              d--;
-              h = 23;
-            }
-            if (d < 0) {
-              d = h = m = s = 0;
-              clearInterval(t); //清除定时器
-            }
-            this.h = h < 10 ? "0" + h : h;
-            this.m = m < 10 ? "0" + m : m;
-            this.s = s < 10 ? "0" + s : s;
-            // console.log(d, h, m, s, 111111);
-          }, 1000);
+          // let time = Math.abs(
+          //   parseInt(this.seckill["endtime"]) -
+          //     parseInt(this.seckill["begintime"])
+          // );
+          // //转成秒
+          // time /= 1000;
+          // // 天
+          // let d = parseInt(time / 86400);
+          // // 时
+          // let h = parseInt((time % 86400) / 3600);
+          // // 分
+          // let m = parseInt((time % 3600) / 60);
+          // // 秒
+          // let s = parseInt(time % 60);
+          // let t = setInterval(() => {
+          //   s--;
+          //   if (s < 0) {
+          //     m--;
+          //     s = 59;
+          //   }
+          //   if (m < 0) {
+          //     h--;
+          //     m = 59;
+          //   }
+          //   if (h < 0) {
+          //     d--;
+          //     h = 23;
+          //   }
+          //   if (d < 0) {
+          //     d = h = m = s = 0;
+          //     clearInterval(t); //清除定时器
+          //   }
+          //   this.h = h < 10 ? "0" + h : h;
+          //   this.m = m < 10 ? "0" + m : m;
+          //   this.s = s < 10 ? "0" + s : s;
+          //   // console.log(d, h, m, s, 111111);
+          // }, 1000);
         })
       );
     // 秒杀
@@ -385,16 +436,16 @@ export default {
   font: 0.22rem/0.33rem "微软雅黑";
   color: #7e7e7e;
 }
-.main .seckill .left .nul{
-    text-align: center;
-    font-size: .4rem;
-    color: #f26b11;
-    padding-top: .3rem;
+.main .seckill .left .nul {
+  text-align: center;
+  font-size: 0.4rem;
+  color: #f26b11;
+  padding-top: 0.3rem;
 }
-.main .seckill .left .nul>i{
-    font-size: 1rem;
-    display: inline-block;
-    padding: .2rem 0;
+.main .seckill .left .nul > i {
+  font-size: 1rem;
+  display: inline-block;
+  padding: 0.2rem 0;
 }
 .main .seckill .left .txt3 span {
   display: inline-block;

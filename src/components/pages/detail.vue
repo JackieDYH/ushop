@@ -137,7 +137,7 @@ export default {
           Indicator.open("添加成功...");
           setTimeout(() => {
             Indicator.close();
-            if (id != 1) this.$router.push("/cart");
+            // if (id != 1) this.$router.push("/cart");
           }, 600);
         } else {
           Indicator.open(res.data.msg);
