@@ -24,7 +24,7 @@
             >
                 <div class="item"
                      v-for="goods of item.children" :key="goods.id"
-                     @click="tolist(goods.pid)"
+                     @click="tolist(goods.id)"
                 >
                     <img :src="goods.img">
                     <h4>{{ goods.catename }}</h4>

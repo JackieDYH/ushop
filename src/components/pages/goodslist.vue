@@ -88,7 +88,7 @@ export default {
     getcategoods() {
       this.$axios({
         url: this.$apis.getcategoods,
-        params: { fid: this.$route.params.cateid }
+        params: { sid: this.$route.params.cateid }
       }).then(res => {
         setTimeout(() => {
           Indicator.close();

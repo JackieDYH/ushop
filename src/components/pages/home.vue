@@ -212,17 +212,14 @@ export default {
           this.seckill = getseckill.data.list ? getseckill.data.list[0] : [];
           //   console.log(getseckill.data.list);
           // 验证秒杀开始时间是否过期
+          // 后端api接口已修改 只输出 开始时间 <= 当前时间 <= 结束时间
           if (
             new Date().getTime() >= parseInt(this.seckill["begintime"]) &&
             new Date().getTime() <= parseInt(this.seckill["endtime"])
           ) {
             // 在开始和结束时间范围内
-            console.log(
-              new Date().getTime() >= parseInt(this.seckill["begintime"])
-            );
-            console.log(
-              new Date().getTime() <= parseInt(this.seckill["endtime"])
-            );
+            // console.log(new Date().getTime() >= parseInt(this.seckill["begintime"]));
+            // console.log(new Date().getTime() <= parseInt(this.seckill["endtime"]));
             // 计算当前时间 - 结束时间
             let time = Math.abs(new Date().getTime() - parseInt(this.seckill["endtime"]));
             //转成秒
