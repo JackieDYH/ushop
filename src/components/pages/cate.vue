@@ -100,7 +100,7 @@ export default {
 .main .right .list{
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: space-around; */
+    /* justify-content: space-between; */
     padding: 0.2rem 0 0 .15rem;
     box-sizing: border-box;
 }

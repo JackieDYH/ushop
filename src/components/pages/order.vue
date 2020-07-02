@@ -68,12 +68,12 @@
           <mt-range
             v-model.number="integral"
             :min="0"
-            :max="goodsPrice + integral"
+            :max="parseInt(goodsPrice + integral) / 2"
             :step="1"
             :bar-height="5"
           >
             <div slot="start">0</div>
-            <div slot="end">{{goodsPrice + integral}}</div>
+            <div slot="end">{{parseInt(goodsPrice + integral) / 2}}</div>
           </mt-range>
           <!-- <input type="number" placeholder="输入积分" v-model.number="integral" /> -->
           <!-- <span>可用50积分</span> -->

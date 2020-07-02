@@ -143,11 +143,13 @@ export default {
 .mint-header {
   background-color: #f26b11;
   height: 0.8rem;
+  line-height: .8rem;
   /* box-sizing: border-box; */
   padding: 0.35rem 0.2rem 0.2rem;
 }
 .icon-tuichudenglu {
-  font-size: 0.35rem;
+  font-size: 0.38rem;
+  vertical-align: middle;
 }
 /* 信息 */
 .head {

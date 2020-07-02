@@ -55,5 +55,6 @@ export default {
 }
 .mint-tab-item i{
   font-size: 24px;
+  /* font-size: .3rem; */
 }
 </style>

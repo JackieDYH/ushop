@@ -24,7 +24,7 @@
           <li
             v-for="item of catearr"
             :key="item.id"
-            @click="$router.push('/cate/'+item.id)"
+            @click="$router.push('/cate/list/'+item.id)"
           >{{item.catename}}</li>
         </ul>
         <div class="arrow"></div>
@@ -329,6 +329,7 @@ export default {
   height: 0.29rem;
 }
 .head .search {
+  display: flex;
   width: 3.03rem;
   height: 0.38rem;
   background: #eee;
@@ -337,6 +338,15 @@ export default {
   font: 0.18rem/0.38rem "微软雅黑";
 }
 .head .search input {
+  text-align: center;
+  /* flex: 1; */
+  width: 2.5rem;
+  font-size: .26rem;
+}
+.head .search i{
+  /* padding: 0 .1rem; */
+  font-size: .34rem;
+  flex: 1;
   text-align: center;
 }
 .head .menu span {
@@ -349,6 +359,17 @@ export default {
 .head .menu b {
   color: #f26b11;
   font-size: 0.28rem;
+  display: inline-block;
+  border: 1px solid #f26b11;
+  border-radius: .3rem;
+  padding: .1rem;
+  background-color: #f5f5f7;
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+  white-space: nowrap;
+  width: .5rem;
+  letter-spacing: .04rem;
+  text-indent: -0.03rem;
 }
 
 /* navbtn 导航部分 */
@@ -432,6 +453,9 @@ export default {
 .main .seckill .left .txt2 {
   font: 0.22rem/0.33rem "微软雅黑";
   color: #7e7e7e;
+}
+.main .seckill .left .txt3 {
+  padding: .1rem 0;
 }
 .main .seckill .left .nul {
   text-align: center;

@@ -344,6 +344,7 @@ export default {
   width: 100%;
 }
 
+
 /* 底部 */
 .footer {
   position: fixed;
@@ -382,11 +383,5 @@ export default {
 }
 .footer .btns span:nth-child(2) {
   background-color: #e43a3d;
-}
-</style>
-
-<style>
-.main .details .text p{
-  padding: 0 .1rem;
 }
 </style>

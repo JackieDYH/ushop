@@ -47,6 +47,11 @@ let router =  new Router({
           component: () => import('@/components/pages/cate'),
         },
         {
+          path: 'cate/list/:fid',
+          name: 'catelistfid',
+          component: () => import('@/components/pages/goodslist'),
+        },
+        {
           path: 'cate/:cateid',
           name: 'catelist',
           component: () => import('@/components/pages/goodslist'),
@@ -85,7 +90,7 @@ import { Indicator,MessageBox } from "mint-ui";
 router.beforeEach((to,from,next)=>{
   // 获取厂库的用户信息
   const user = store.state.userinfo;
-  console.log('路由地址是否需要验证',to.path,to.matched.some(record => record.meta.requiresAuth))
+  // console.log('路由地址是否需要验证',to.path,to.matched.some(record => record.meta.requiresAuth))
   if(to.matched.some(record => record.meta.requiresAuth)){
     if(user.token){
       next();

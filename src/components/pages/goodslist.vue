@@ -47,10 +47,18 @@ export default {
   mounted() {
     Indicator.open("加载中...");
 
-    console.log("cateid:", this.$route.params);
+    // console.log("cateid:", this.$route.params,111);
     let text = this.$route.params.searchtext;
     if (text == undefined) {
-      this.getcategoods();
+      let data;
+      if(this.$route.params.fid){//查询所有一级分类商品
+        // console.log(this.$route.params,3111)
+        data = {fid:this.$route.params.fid}
+      }else{//查询所有二级分类商品
+        // console.log(this.$route.params,3222)
+        data = {sid:this.$route.params.cateid}
+      }
+      this.getcategoods(data);
     } else {
       this.searchText = text;
       this.search();
@@ -85,10 +93,11 @@ export default {
       });
     },
     //   获取商品信息
-    getcategoods() {
+    getcategoods(data) {
       this.$axios({
         url: this.$apis.getcategoods,
-        params: { sid: this.$route.params.cateid }
+        params: data
+        // params: { sid: this.$route.params.cateid }
       }).then(res => {
         setTimeout(() => {
           Indicator.close();
@@ -113,6 +122,7 @@ export default {
 }
 /* 搜索 */
 .main .search {
+  display: flex;
   width: 70%;
   height: 0.4rem;
   line-height: 0.4rem;
@@ -132,6 +142,7 @@ export default {
   font: 0.24rem/0.4rem "微软雅黑";
 }
 .main .search i {
+  flex: 1;
   font-size: 0.4rem;
   color: #f26b11;
 }
