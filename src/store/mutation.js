@@ -6,5 +6,8 @@ export default {
     },
     setCartlist(state,info){
         state.cartlist = info;
+    },
+    setUrlpath(state,info){
+        state.urlpath = info;
     }
 }

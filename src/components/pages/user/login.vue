@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions,mapGetters } from 'vuex'
 import { Indicator, Toast } from "mint-ui";
 export default {
   data() {
@@ -36,9 +36,12 @@ export default {
       }
     };
   },
+  computed:{
+    ...mapGetters(['urlpath']),
+  },
   methods: {
     //   使用vuex助手函数
-      ...mapActions(['setUserinfoSync']),
+      ...mapActions(['setUserinfoSync','setUrlpathSync']),
     login() {
       // 验证手机号
       const reg = /^1[345789]\d{9}$/;
@@ -56,14 +59,16 @@ export default {
         method: "post",
         data: this.info
       }).then(res => {
-          console.log(res)
+          // console.log(res)
         if (res.data.code == 200) {
           Indicator.open("登录成功...");
         //   存入状态中
           this.setUserinfoSync(res.data.list);
           setTimeout(() => {
             Indicator.close();
-            this.$router.push("/");
+            this.$router.push(this.urlpath);
+            this.setUrlpathSync('/');//还原状态
+            // this.$router.push("/");
           }, 600);
         } else {
           Indicator.open(res.data.msg);

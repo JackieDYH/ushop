@@ -6,4 +6,7 @@ export default {
     setCartlistSync(context,info){
         context.commit('setCartlist',info);
     },
+    setUrlpathSync({commit},info){
+        commit('setUrlpath',info);
+    }
 }

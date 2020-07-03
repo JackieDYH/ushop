@@ -89,15 +89,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["userinfo", "cartlist"])
+    ...mapGetters(["userinfo", "cartlist"]),
   },
   methods: {
-    ...mapActions(["setCartlistSync"]),
+    ...mapActions(["setCartlistSync","setUrlpathSync"]),
     // 立即购买
     add() {
       // 调用接口添加商品到数据库
       this.cartadd(1);
-
       const uid = this.userinfo.uid;
       this.$http.get(this.$apis.cartlist, { uid }).then(res => {
         if (res.data.code == 200) {
@@ -117,6 +116,7 @@ export default {
           console.log(good, 222);
         } else {
           Indicator.open(res.data.msg);
+          this.setUrlpathSync(this.$route.path);//存储路由跳转地址状态
           setTimeout(() => {
             Indicator.close();
             this.$router.push("/login");
@@ -135,12 +135,14 @@ export default {
         // console.log(res, 11);
         if (res.data.code == 200) {
           Indicator.open("添加成功...");
+          console.log(this.$route,11111111)
           setTimeout(() => {
             Indicator.close();
             // if (id != 1) this.$router.push("/cart");
           }, 600);
         } else {
           Indicator.open(res.data.msg);
+          this.setUrlpathSync(this.$route.path);//存储路由跳转地址状态
           setTimeout(() => {
             Indicator.close();
             this.$router.push("/login");
@@ -194,12 +196,12 @@ export default {
   },
   mounted() {
     Indicator.open("加载中...");
-    console.log("id:", this.$route.params.id);
+    // console.log("id:", this.$route.params.id);
     this.$axios({
       url: this.$apis.getgoodsinfo,
       params: { id: this.$route.params.id }
     }).then(res => {
-      console.log(res);
+      // console.log(res);
       if (res.data.code == 200) {
         setTimeout(() => {
           Indicator.close();

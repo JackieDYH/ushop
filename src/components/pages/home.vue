@@ -256,7 +256,7 @@ export default {
               // console.log(d, h, m, s, 111111);
             }, 1000);
           } else {
-            console.log('秒杀过期');
+            // console.log('秒杀过期');
             this.seckill = [];
           }
           // 计算差值 毫秒

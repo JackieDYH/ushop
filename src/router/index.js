@@ -98,6 +98,8 @@ router.beforeEach((to,from,next)=>{
       if (to.fullPath == '/login' || to.fullPath == '/register') {
         next();
       } else {
+        // 存储跳转失败的路由地址
+        store.state.urlpath = from.path;
         Indicator.open("请先登录...");
         setTimeout(() => {
           next('/login')

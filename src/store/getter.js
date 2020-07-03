@@ -4,5 +4,8 @@ export default{
     },
     cartlist(state){
         return state.cartlist;
+    },
+    urlpath(state){
+        return state.urlpath;
     }
 }
